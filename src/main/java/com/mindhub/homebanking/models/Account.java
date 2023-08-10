@@ -2,7 +2,7 @@ package com.mindhub.homebanking.models;
 
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 public class Account {
@@ -13,17 +13,17 @@ public class Account {
 
     private String number;
 
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     private double balance;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_id")
-    private Client client;
+    private Client accountOwner;
 
     public Account() {}
 
-    public Account(String number, LocalDateTime creationDate, double balance) {
+    public Account(String number, LocalDate creationDate, double balance) {
         this.number = number;
         this.creationDate = creationDate;
         this.balance = balance;
@@ -41,11 +41,11 @@ public class Account {
         this.number = number;
     }
 
-    public LocalDateTime getCreationDate() {
+    public LocalDate getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -57,12 +57,14 @@ public class Account {
         this.balance = balance;
     }
 
-    public Client getClient() {
-        return client;
+    public Client getAccountOwner() {
+        return accountOwner;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setAccountOwner(Client accountOwner) {
+        this.accountOwner = accountOwner;
     }
+
+    public void add(Account account) { }
 }
 
