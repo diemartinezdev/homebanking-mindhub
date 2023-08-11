@@ -8,6 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import static com.mindhub.homebanking.models.TransactionType.CREDIT;
+import static com.mindhub.homebanking.models.TransactionType.DEBIT;
 
 
 @SpringBootApplication
@@ -18,7 +22,7 @@ public class HomebankingApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
 		return (args) -> {
 
 			Client client1 = new Client("Melba", "Morel", "melba@mindhub.com");
@@ -39,6 +43,15 @@ public class HomebankingApplication {
 			clientRepository.save(client2);
 			accountRepository.save(account3);
 
+			Transaction transaction1 = new Transaction(DEBIT, 250.0,"debt", LocalDateTime.now(), account1);
+			Transaction transaction2 = new Transaction(DEBIT, 300.0, "loan", LocalDateTime.now(), account2);
+			Transaction transaction3 = new Transaction(CREDIT, 500.0, "tv", LocalDateTime.now(), account3);
+			account1.addTransaction(transaction1);
+			account2.addTransaction(transaction2);
+			account3.addTransaction(transaction3);
+			transactionRepository.save(transaction1);
+			transactionRepository.save(transaction2);
+			transactionRepository.save(transaction3);
 		};
 	}
 }

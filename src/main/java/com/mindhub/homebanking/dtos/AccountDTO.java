@@ -1,4 +1,4 @@
-package com.mindhub.homebanking.controllers;
+package com.mindhub.homebanking.dtos;
 
 import com.mindhub.homebanking.models.Account;
 
@@ -12,6 +12,9 @@ public class AccountDTO {
     private LocalDate creationDate;
 
     private double balance;
+
+
+    public AccountDTO() { }
 
     public AccountDTO(Account account) {
         this.id = account.getId();
