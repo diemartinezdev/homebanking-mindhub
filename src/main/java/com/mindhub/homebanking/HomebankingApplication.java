@@ -43,9 +43,12 @@ public class HomebankingApplication {
 			clientRepository.save(client2);
 			accountRepository.save(account3);
 
-			Transaction transaction1 = new Transaction(DEBIT, 250.0,"debt", LocalDateTime.now(), account1);
-			Transaction transaction2 = new Transaction(DEBIT, 300.0, "loan", LocalDateTime.now(), account3);
-			Transaction transaction3 = new Transaction(CREDIT, 500.0, "tv", LocalDateTime.now(), account2);
+			Transaction transaction1 = new Transaction(DEBIT, 250.0,"debt", LocalDateTime.now());
+			account1.addTransaction(transaction1);
+			Transaction transaction2 = new Transaction(DEBIT, 300.0, "loan", LocalDateTime.now());
+			account3.addTransaction(transaction2);
+			Transaction transaction3 = new Transaction(CREDIT, 500.0, "tv", LocalDateTime.now());
+			account2.addTransaction(transaction3);
 			transactionRepository.save(transaction1);
 			transactionRepository.save(transaction2);
 			transactionRepository.save(transaction3);

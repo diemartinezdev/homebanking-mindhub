@@ -22,16 +22,15 @@ public class Transaction {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
-    private Account account;
+    private Account accounts;
 
     public Transaction() { };
 
-    public Transaction(TransactionType type, double amount, String description, LocalDateTime date, Account account) {
+    public Transaction(TransactionType type, double amount, String description, LocalDateTime date) {
         this.type = type;
         this.amount = amount;
         this.description = description;
         this.date = date;
-        this.account = account;
     }
 
     public long getId() {
@@ -71,13 +70,11 @@ public class Transaction {
     }
 
     public Account getAccount() {
-        return account;
+        return accounts;
     }
 
     public void setAccount(Account account) {
-        this.account = account;
+        this.accounts = account;
     }
 
-    public void addTransaction(Transaction transaction) {
-    }
 }

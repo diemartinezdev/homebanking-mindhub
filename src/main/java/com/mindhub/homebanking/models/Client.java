@@ -60,7 +60,7 @@ public class Client {
     }
 
     public void addAccount(Account account) {
-        account.setAccountOwner(this);
+        account.setClients(this);
         accounts.add(account);
     }
 }
