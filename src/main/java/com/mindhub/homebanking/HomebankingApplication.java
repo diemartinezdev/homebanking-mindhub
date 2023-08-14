@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.mindhub.homebanking.models.TransactionType.CREDIT;
 import static com.mindhub.homebanking.models.TransactionType.DEBIT;
@@ -52,6 +53,8 @@ public class HomebankingApplication {
 			transactionRepository.save(transaction1);
 			transactionRepository.save(transaction2);
 			transactionRepository.save(transaction3);
+
+			Loan loan1 = new Loan("Mortgage", 500000, List.of(12, 24, 36, 48, 60));
 		};
 	}
 }
