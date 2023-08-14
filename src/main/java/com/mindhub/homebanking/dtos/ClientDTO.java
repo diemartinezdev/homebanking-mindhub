@@ -11,7 +11,7 @@ public class ClientDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private Set<AccountDTO> account;
+    private Set<AccountDTO> accounts;
 
 
     public ClientDTO(Client client) {
@@ -19,7 +19,7 @@ public class ClientDTO {
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.email = client.getEmail();
-        this.account = client
+        this.accounts = client
                 .getAccounts()
                 .stream()
                 .map(account -> new AccountDTO(account))
@@ -42,11 +42,8 @@ public class ClientDTO {
         return email;
     }
 
-    public Set<AccountDTO> getAccount() {
-        return account;
+    public Set<AccountDTO> getAccounts() {
+        return accounts;
     }
 
-    public void setAccount(Set<AccountDTO> account) {
-        this.account = account;
-    }
 }

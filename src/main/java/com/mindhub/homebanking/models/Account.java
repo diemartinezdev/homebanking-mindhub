@@ -19,10 +19,10 @@ public class Account {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
-    private Client clients;
+    private Client client;
 
-    @OneToMany(mappedBy = "accounts", fetch = FetchType.EAGER)
-    Set<Transaction> transactions = new HashSet<>();
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    private Set<Transaction> transactions = new HashSet<>();
 
     public Account() {
     }
@@ -66,11 +66,11 @@ public class Account {
     }
 
     public Client getClients() {
-        return clients;
+        return client;
     }
 
     public void setClients(Client clients) {
-        this.clients = clients;
+        this.client = clients;
     }
 
     public Set<Transaction> getTransactions() {
