@@ -10,11 +10,11 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    private long id;
+    private Long id;
 
     private TransactionType type;
 
-    private double amount;
+    private Double amount;
 
     private String description;
 
@@ -78,6 +78,6 @@ public class Transaction {
         this.account = account;
     }
 
-    public void save(Transaction transaction) {
+    public void addTransaction(Transaction transaction) {
     }
 }

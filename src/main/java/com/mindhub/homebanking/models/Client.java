@@ -15,7 +15,7 @@ public class Client {
     private String lastName;
     private String email;
 
-    @OneToMany(mappedBy = "accountOwner", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<Account> accounts = new HashSet<>();
 
     public Client() {
@@ -27,7 +27,7 @@ public class Client {
         this.email = mail;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
