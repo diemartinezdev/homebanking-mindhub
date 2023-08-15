@@ -23,7 +23,7 @@ public class HomebankingApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository) {
 		return (args) -> {
 
 			Client client1 = new Client("Melba", "Morel", "melba@mindhub.com");
@@ -54,7 +54,13 @@ public class HomebankingApplication {
 			transactionRepository.save(transaction2);
 			transactionRepository.save(transaction3);
 
-			Loan loan1 = new Loan("Mortgage", 500000, List.of(12, 24, 36, 48, 60));
+			Loan loan1 = new Loan("Mortgage", 500000.0, List.of(12, 24, 36, 48, 60));
+			Loan loan2 = new Loan("Personal", 100000.0, List.of(6,12,24));
+			Loan loan3 = new Loan("Automotive", 300000.0, List.of(6,12,24,36));
+			loanRepository.save(loan1);
+			loanRepository.save(loan2);
+			loanRepository.save(loan3);
+
 		};
 	}
 }
