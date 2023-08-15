@@ -60,7 +60,6 @@ public class HomebankingApplication {
 			loanRepository.save(loan1);
 			loanRepository.save(loan2);
 			loanRepository.save(loan3);
-
 		};
 	}
 }

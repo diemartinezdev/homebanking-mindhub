@@ -4,34 +4,34 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
-public class Loan {
+public class ClientLoan {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
-    private String name;
-    private Double maxAmount;
-
+    private Double amount;
     @ElementCollection
     @Column(name="payments")
     private List<Integer> payments = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
-    @OneToMany(mappedBy="loan", fetch= FetchType.EAGER)
-    private Set<ClientLoan> clientLoans = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "loan_id")
+    private Loan loan;
 
-
-    public Loan() {
+    public ClientLoan() {
     }
 
-    public Loan(String name, Double maxAmount, List<Integer> payments) {
-        this.name = name;
-        this.maxAmount = maxAmount;
+    public ClientLoan(Double amount, List<Integer> payments, Client client, Loan loan) {
+        this.amount = amount;
         this.payments = payments;
+        this.client = client;
+        this.loan = loan;
     }
 
     public Long getId() {
@@ -42,20 +42,12 @@ public class Loan {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Double getAmount() {
+        return amount;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getMaxAmount() {
-        return maxAmount;
-    }
-
-    public void setMaxAmount(Double maxAmount) {
-        this.maxAmount = maxAmount;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public List<Integer> getPayments() {
@@ -66,7 +58,19 @@ public class Loan {
         this.payments = payments;
     }
 
-    public Set<ClientLoan> getClient() {
-        return clientLoans;
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Loan getLoan() {
+        return loan;
+    }
+
+    public void setLoan(Loan loan) {
+        this.loan = loan;
     }
 }
