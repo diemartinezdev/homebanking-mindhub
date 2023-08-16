@@ -6,7 +6,6 @@ import java.util.Set;
 
 import java.util.HashSet;
 import static java.util.stream.Collectors.toSet;
-import java.util.stream.Collectors;
 
 
 public class ClientDTO {
@@ -16,7 +15,7 @@ public class ClientDTO {
     private String email;
     private Set<AccountDTO> accounts;
 
-    private Set<ClientLoanDTO> loans = new HashSet<>();
+    private Set<ClientLoanDTO> loans;
 
     public ClientDTO(Client client) {
         this.id = client.getId();
@@ -28,7 +27,11 @@ public class ClientDTO {
                 .stream()
                 .map(account -> new AccountDTO(account))
                 .collect(toSet());
-        this.loans = client.getLoan().stream().map(loan -> new ClientLoanDTO(loan)).collect(Collectors.toSet());
+        this.loans = client
+                .getClientLoans()
+                .stream()
+                .map(clientLoan -> new ClientLoanDTO(clientLoan))
+                .collect(toSet());
     }
 
     public Long getId() {

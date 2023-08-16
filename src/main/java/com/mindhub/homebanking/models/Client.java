@@ -1,16 +1,20 @@
 package com.mindhub.homebanking.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
+
+import static java.util.stream.Collectors.toSet;
 
 @Entity
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -63,16 +67,34 @@ public class Client {
         return accounts;
     }
 
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
+    }
+
     public void addAccount(Account account) {
         account.setClients(this);
         accounts.add(account);
     }
 
-    public Set<ClientLoan> getLoan() {
-        return clientLoans;
+    @JsonIgnore
+    public Set<Loan> getLoans() {
+        return clientLoans
+                .stream()
+                .map(clientLoan -> clientLoan.getLoan())
+                .collect(toSet());
     }
+
     public Set<ClientLoan> getClientLoans() {
         return clientLoans;
+    }
+
+    public void setClientLoans(Set<ClientLoan> clientLoans) {
+        this.clientLoans = clientLoans;
+    }
+
+    public void addClientLoan(ClientLoan clientLoan) {
+        clientLoan.setClient(this);
+        clientLoans.add(clientLoan);
     }
 }
 

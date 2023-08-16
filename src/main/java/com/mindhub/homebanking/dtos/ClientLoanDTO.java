@@ -2,14 +2,11 @@ package com.mindhub.homebanking.dtos;
 
 import com.mindhub.homebanking.models.ClientLoan;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ClientLoanDTO {
     private Long id;
     private Double amount;
     private String name;
-    private List<Integer> payments = new ArrayList<>();
+    private Integer payments;
     private Long loanId;
 
 
@@ -33,7 +30,7 @@ public class ClientLoanDTO {
         return name;
     }
 
-    public List<Integer> getPayments() {
+    public Integer getPayments() {
         return payments;
     }
 
