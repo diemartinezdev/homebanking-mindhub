@@ -10,10 +10,6 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
-
-import static com.mindhub.homebanking.models.TransactionType.CREDIT;
-import static com.mindhub.homebanking.models.TransactionType.DEBIT;
 
 
 @SpringBootApplication
@@ -24,7 +20,7 @@ public class HomebankingApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository) {
 		return (args) -> {
 
 			Client client1 = new Client("Melba", "Morel", "melba@mindhub.com");
@@ -45,11 +41,11 @@ public class HomebankingApplication {
 			clientRepository.save(client2);
 			accountRepository.save(account3);
 
-			Transaction transaction1 = new Transaction(DEBIT, 250.0,"debt", LocalDateTime.now());
+			Transaction transaction1 = new Transaction(TransactionType.DEBIT, 250.0,"debt", LocalDateTime.now());
 			account1.addTransaction(transaction1);
-			Transaction transaction2 = new Transaction(DEBIT, 300.0, "loan", LocalDateTime.now());
+			Transaction transaction2 = new Transaction(TransactionType.DEBIT, 300.0, "loan", LocalDateTime.now());
 			account3.addTransaction(transaction2);
-			Transaction transaction3 = new Transaction(CREDIT, 500.0, "tv", LocalDateTime.now());
+			Transaction transaction3 = new Transaction(TransactionType.CREDIT, 500.0, "tv", LocalDateTime.now());
 			account2.addTransaction(transaction3);
 			transactionRepository.save(transaction1);
 			transactionRepository.save(transaction2);
@@ -78,6 +74,16 @@ public class HomebankingApplication {
 			loan3.addClientLoan(clientLoan4);
 			clientLoanRepository.save(clientLoan3);
 			clientLoanRepository.save(clientLoan4);
+
+			Card card1 = new Card(client1.getFirstName() + " " + client1.getLastName(),CardType.DEBIT,CardColor.GOLD,"1234-1234-1234-1234",(short) 123,LocalDate.now(),LocalDate.now().plusYears(5));
+			Card card2 = new Card(client1.getFirstName() + " " + client1.getLastName(),CardType.CREDIT,CardColor.TITANIUM,"1234-1234-1234-4321",(short) 432,LocalDate.now(),LocalDate.now().plusYears(5));
+			Card card3 = new Card(client2.getFirstName() + " " + client2.getLastName(),CardType.CREDIT,CardColor.SILVER,"3456-3456-3456-3456",(short) 345,LocalDate.now(),LocalDate.now().plusMonths(11));
+			client1.addCard(card1);
+			client1.addCard(card2);
+			client2.addCard(card3);
+			cardRepository.save(card1);
+			cardRepository.save(card2);
+			cardRepository.save(card3);
 		};
 	}
 }
