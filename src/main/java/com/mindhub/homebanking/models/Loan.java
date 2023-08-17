@@ -25,7 +25,6 @@ public class Loan {
     @OneToMany(mappedBy="loan", fetch= FetchType.EAGER)
     private List<ClientLoan> clientLoans = new ArrayList<>();
 
-
     public Loan() {
     }
 
@@ -37,10 +36,6 @@ public class Loan {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -75,6 +70,10 @@ public class Loan {
         this.clientLoans = clientLoans;
     }
 
+    public void addClientLoan(ClientLoan clientLoan) {
+        clientLoan.setLoan(this);
+        this.clientLoans.add(clientLoan);
+    }
     @JsonIgnore
     public Set<Client> getClient() {
         return clientLoans
@@ -83,8 +82,4 @@ public class Loan {
                 .collect(toSet());
     }
 
-    public void addClientLoan(ClientLoan clientLoan) {
-        clientLoan.setLoan(this);
-        this.clientLoans.add(clientLoan);
-    }
 }

@@ -12,8 +12,7 @@ public class TransactionDTO {
     private String description;
     private LocalDateTime date;
 
-    public TransactionDTO() {
-    }
+    public TransactionDTO() { }
 
     public TransactionDTO(Transaction transaction) {
         this.id = transaction.getId();
