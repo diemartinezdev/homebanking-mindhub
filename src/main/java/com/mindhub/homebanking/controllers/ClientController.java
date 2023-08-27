@@ -1,8 +1,11 @@
 package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.ClientDTO;
+import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.repositories.AccountRepository;
+import com.mindhub.homebanking.utilities.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -23,6 +27,8 @@ public class ClientController {
     private ClientRepository clientRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @RequestMapping("/clients")
     private List<ClientDTO> getClients() {
@@ -51,7 +57,9 @@ public class ClientController {
         }
             Client newClient = new Client(firstName, lastName, email, passwordEncoder.encode(password));
             clientRepository.save(newClient);
-            return new ResponseEntity<>("Registration completed!",HttpStatus.CREATED);
+            Account newAccount = new Account("VIN" + Utility.getRandomNumber(00000000, 99999999), LocalDate.now(), 0.0, newClient);
+            accountRepository.save(newAccount);
+            return new ResponseEntity<>("Account created :D", HttpStatus.CREATED);
     }
        /*
        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
