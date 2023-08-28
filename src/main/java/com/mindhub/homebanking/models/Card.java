@@ -16,7 +16,7 @@ public class Card {
     private CardColor color;
     private CardType type;
     private String number;
-    private Short cvv;
+    private Integer cvv;
     private LocalDate thruDate;
     private LocalDate fromDate;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -25,7 +25,7 @@ public class Card {
 
     public Card() { }
 
-    public Card(String cardHolder, CardType type, CardColor color, String number, Short cvv, LocalDate fromDate, LocalDate thruDate) {
+    public Card(String cardHolder, CardType type, CardColor color, String number, Integer cvv, LocalDate fromDate, LocalDate thruDate) {
         this.cardHolder = cardHolder;
         this.type = type;
         this.color = color;
@@ -71,11 +71,11 @@ public class Card {
         this.number = number;
     }
 
-    public Short getCvv() {
+    public Integer getCvv() {
         return cvv;
     }
 
-    public void setCvv(Short cvv) {
+    public void setCvv(Integer cvv) {
         this.cvv = cvv;
     }
 

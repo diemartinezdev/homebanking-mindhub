@@ -36,8 +36,7 @@ public class AccountController {
 
     @RequestMapping("/accounts/{id}")
     public AccountDTO getAccounts(@PathVariable Long id) {
-        AccountDTO accountId = new AccountDTO(accountRepository.findById(id).orElse(null));
-        return accountId;
+        return new AccountDTO(accountRepository.findById(id).orElse(null));
     }
 
     @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
