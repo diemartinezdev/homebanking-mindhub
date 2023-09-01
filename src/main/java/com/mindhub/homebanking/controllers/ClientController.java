@@ -22,7 +22,6 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @RequestMapping("/api")
 public class ClientController {
-
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
