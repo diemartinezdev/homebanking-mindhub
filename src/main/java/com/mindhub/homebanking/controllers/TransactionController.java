@@ -1,6 +1,9 @@
 package com.mindhub.homebanking.controllers;
 
+import com.mindhub.homebanking.dtos.TransactionDTO;
 import com.mindhub.homebanking.models.Account;
+import com.mindhub.homebanking.models.Transaction;
+import com.mindhub.homebanking.models.TransactionType;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
@@ -8,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -23,31 +28,64 @@ public class TransactionController {
     @Autowired
     private ClientRepository clientRepository;
 
-    @RequestMapping(path = "transactions", method = RequestMethod.POST)
+    @GetMapping("/transactions")
+    public List<TransactionDTO> getTransactions() {
+        return transactionRepository.findAll().stream().map(transaction -> new TransactionDTO(transaction)).collect(Collectors.toList());
+    }
+
+    @GetMapping("/transactions/{id}")
+    public TransactionDTO getTransactions(@PathVariable Long id) {
+        return new TransactionDTO(transactionRepository.findById(id).orElse(null));
+    }
+
+    @Transactional
+    @PostMapping("/transactions")
     public ResponseEntity<Object> createTransaction (
             @RequestParam Double amount, @RequestParam String description, @RequestParam String senderAccount, @RequestParam String receiverAccount, Authentication authentication
     ) {
+        Account originAccount = accountRepository.findByNumber(senderAccount);
+        Account destinyAccount = accountRepository.findByNumber(receiverAccount);
+
         if (amount.isNaN()) {
             return new ResponseEntity<>("Please enter the amount", HttpStatus.FORBIDDEN);
-        } else if (description.isEmpty()) {
+        }
+        if (description.isEmpty()) {
             return new ResponseEntity<>("Please enter the description", HttpStatus.FORBIDDEN);
-        } else if (senderAccount.isEmpty()) {
+        }
+        if (senderAccount.isEmpty()) {
             return new ResponseEntity<>("Please enter the origin account", HttpStatus.FORBIDDEN);
-        } else if (receiverAccount.isEmpty()) {
+        }
+        if (receiverAccount.isEmpty()) {
             return new ResponseEntity<>("Please enter the destiny account", HttpStatus.FORBIDDEN);
-        } else if (senderAccount.equals(receiverAccount)) {
+        }
+        if (senderAccount.equals(receiverAccount)) {
             return new ResponseEntity<>("The accounts are the same", HttpStatus.FORBIDDEN);
-        } else if (senderAccount == null) {
+        }
+        if (senderAccount == null) {
             return new ResponseEntity<>("The origin account doesn't exist", HttpStatus.FORBIDDEN);
-        } else if (receiverAccount == null) {
+        }
+        if (receiverAccount == null) {
             return new ResponseEntity<>("The destination account doesn't exist", HttpStatus.FORBIDDEN);
-        } else if (clientRepository.findByEmail(authentication.getName()).getAccounts().stream().noneMatch(account -> account.getNumber().equals(senderAccount))) {
+        }
+        if (clientRepository.findByEmail(authentication.getName()).getAccounts().stream().noneMatch(account -> account.getNumber().equals(senderAccount))) {
             return new ResponseEntity<>("The origin account doesn't belong to you", HttpStatus.FORBIDDEN);
-        } else if (amount > senderAccount.getBalance()) {
-            
+        }
+        if (amount > originAccount.getBalance()) {
+            return new ResponseEntity<>("Insufficient funds", HttpStatus.FORBIDDEN);
         }
 
+        Transaction debit = new Transaction(TransactionType.DEBIT, amount, description, LocalDateTime.now());
+        originAccount.addTransaction(debit);
+        originAccount.setBalance(originAccount.getBalance() - amount);
+        transactionRepository.save(debit);
+        accountRepository.save(originAccount);
+
+        Transaction credit = new Transaction(TransactionType.CREDIT, amount, description, LocalDateTime.now());
+        destinyAccount.addTransaction(credit);
+        destinyAccount.setBalance(destinyAccount.getBalance() + amount);
+        transactionRepository.save(credit);
+        accountRepository.save(destinyAccount);
+
+        return new ResponseEntity<>("Transaction executed correctly", HttpStatus.CREATED);
     }
-    }
-    )
 }

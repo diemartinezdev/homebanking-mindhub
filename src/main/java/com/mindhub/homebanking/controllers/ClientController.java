@@ -29,31 +29,36 @@ public class ClientController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @RequestMapping("/clients")
+    @GetMapping("/clients")
     private List<ClientDTO> getClients() {
         return clientRepository.findAll().stream().map(client->new ClientDTO(client)).collect(toList());
     }
 
-    @RequestMapping("/clients/{id}")
+    @GetMapping("/clients/{id}")
     private ClientDTO getClients(@PathVariable Long id) {
         return new ClientDTO(clientRepository.findById(id).orElse(null));
     }
 
-    @RequestMapping(path = "/clients", method = RequestMethod.POST)
+    @PostMapping("/clients")
     public ResponseEntity<Object> register(
             @RequestParam String firstName, @RequestParam String lastName, @RequestParam String email, @RequestParam String password
     ) {
         if (firstName.isEmpty()) {
             return new ResponseEntity<>("Please complete the first name", HttpStatus.FORBIDDEN);
-        } else if (lastName.isEmpty()) {
+        }
+        if (lastName.isEmpty()) {
             return new ResponseEntity<>("Please complete the last name", HttpStatus.FORBIDDEN);
-        } else if (email.isEmpty()) {
+        }
+        if (email.isEmpty()) {
             return new ResponseEntity<>("Please complete the email", HttpStatus.FORBIDDEN);
-        } else if (password.isEmpty()) {
+        }
+        if (password.isEmpty()) {
             return new ResponseEntity<>("Please complete the password", HttpStatus.FORBIDDEN);
-        } else if (clientRepository.findByEmail(email) !=  null) {
+        }
+        if (clientRepository.findByEmail(email) !=  null) {
             return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
         }
+
             Client newClient = new Client(firstName, lastName, email, passwordEncoder.encode(password));
             clientRepository.save(newClient);
             Account newAccount = new Account("VIN" + Utility.getRandomNumber(00000000, 99999999), LocalDate.now(), 0.0, newClient);
@@ -71,7 +76,7 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.CREATED);
         */
 
-    @RequestMapping("/clients/current")
+    @GetMapping("/clients/current")
     public ClientDTO getCurrent (Authentication authentication) {
         return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
     }
