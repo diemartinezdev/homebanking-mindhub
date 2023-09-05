@@ -2,12 +2,8 @@ package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.LoanApplicationDTO;
 import com.mindhub.homebanking.dtos.LoanDTO;
-import com.mindhub.homebanking.models.Account;
-import com.mindhub.homebanking.models.Client;
-import com.mindhub.homebanking.models.Loan;
-import com.mindhub.homebanking.repositories.AccountRepository;
-import com.mindhub.homebanking.repositories.ClientRepository;
-import com.mindhub.homebanking.repositories.LoanRepository;
+import com.mindhub.homebanking.models.*;
+import com.mindhub.homebanking.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +24,10 @@ public class LoanController {
     private ClientRepository clientRepository;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private ClientLoanRepository clientLoanRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @GetMapping("/loans")
     public List<LoanDTO> getLoans() {
@@ -66,5 +67,24 @@ public class LoanController {
         if (!client.getAccounts().contains(destinyAccount)) {
             return new ResponseEntity<>("The account doesn't correspond to the client", HttpStatus.FORBIDDEN);
         }
+
+        Double loanRevenue = (loanApplicationDTO.getAmount() * 0.20) + (loanApplicationDTO.getAmount());
+
+        ClientLoan newLoan = new ClientLoan(loanRevenue, loanApplicationDTO.getPayments());
+        Transaction newTransaction = new Transaction(TransactionType.CREDIT, loanApplicationDTO.getAmount(), loan.getName() + " - Loan approved", LocalDateTime.now());
+
+        destinyAccount.setBalance(destinyAccount.getBalance() + loanApplicationDTO.getAmount());
+        destinyAccount.addTransaction(newTransaction);
+
+        client.addClientLoan(newLoan);
+        loan.addClientLoan(newLoan);
+
+        transactionRepository.save(newTransaction);
+        clientLoanRepository.save(newLoan);
+        accountRepository.save(destinyAccount);
+        loanRepository.save(loan);
+        clientRepository.save(client);
+
+        return new ResponseEntity<>("Loan applied correctly", HttpStatus.CREATED);
     }
 }
