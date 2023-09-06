@@ -38,19 +38,13 @@ public class LoanController {
     @PostMapping("/loans")
     public ResponseEntity<Object> createLoan(
             @RequestBody LoanApplicationDTO loanApplicationDTO, Authentication authentication
-            ) {
+    ) {
         Client client = clientRepository.findByEmail(authentication.getName());
         Loan loan = loanRepository.findByName(loanApplicationDTO.getLoanId());
         Account destinyAccount = accountRepository.findByNumber(loanApplicationDTO.getDestinationAccount());
 
-        if (loanApplicationDTO.getLoanId() == null || loanApplicationDTO.getAmount() == null || loanApplicationDTO.getPayments() == null || loanApplicationDTO.getDestinationAccount() == null) {
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
-        }
-        if (loanApplicationDTO.getAmount() <= 0) {
-            return new ResponseEntity<>("Incorrect amount", HttpStatus.FORBIDDEN);
-        }
-        if (loanApplicationDTO.getPayments() <= 0) {
-            return new ResponseEntity<>("Incorrect number of payments", HttpStatus.FORBIDDEN);
+        if (loanApplicationDTO.getAmount() <= 0.0 || loanApplicationDTO.getPayments() <= 0) {
+            return new ResponseEntity<>("Missing parameters", HttpStatus.FORBIDDEN);
         }
         if (loan == null) {
             return new ResponseEntity<>("Loan doesn't exist", HttpStatus.FORBIDDEN);
@@ -68,20 +62,17 @@ public class LoanController {
             return new ResponseEntity<>("The account doesn't correspond to the client", HttpStatus.FORBIDDEN);
         }
 
-        Double loanRevenue = (loanApplicationDTO.getAmount() * 0.20) + (loanApplicationDTO.getAmount());
+        Double loanRevenue = (loanApplicationDTO.getAmount() * 1.20);
 
-        ClientLoan newLoan = new ClientLoan(loanRevenue, loanApplicationDTO.getPayments());
-        Transaction newTransaction = new Transaction(TransactionType.CREDIT, loanApplicationDTO.getAmount(), loan.getName() + " - Loan approved", LocalDateTime.now());
-
+        ClientLoan newClientLoan = new ClientLoan(loanRevenue, loanApplicationDTO.getPayments());
+        Transaction newTransaction = new Transaction(TransactionType.CREDIT, loanRevenue, loan.getName() + " - Loan approved", LocalDateTime.now());
         destinyAccount.setBalance(destinyAccount.getBalance() + loanApplicationDTO.getAmount());
         destinyAccount.addTransaction(newTransaction);
 
-        client.addClientLoan(newLoan);
-        loan.addClientLoan(newLoan);
-
+        client.addClientLoan(newClientLoan);
+        loan.addClientLoan(newClientLoan);
+        clientLoanRepository.save(newClientLoan);
         transactionRepository.save(newTransaction);
-        clientLoanRepository.save(newLoan);
-        accountRepository.save(destinyAccount);
         loanRepository.save(loan);
         clientRepository.save(client);
 

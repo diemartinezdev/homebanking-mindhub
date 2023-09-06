@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -33,6 +34,12 @@ public class AccountController {
     @GetMapping("/accounts/{id}")
     public AccountDTO getAccounts(@PathVariable Long id) {
         return new AccountDTO(accountRepository.findById(id).orElse(null));
+    }
+
+    @GetMapping("/clients/current/accounts")
+    @ResponseBody
+    public List<AccountDTO> getCurrentClientAccounts(Authentication authentication) {
+        return clientRepository.findByEmail(authentication.getName()).getAccounts().stream().map(account -> new AccountDTO(account)).collect(Collectors.toList());
     }
 
     @PostMapping("/clients/current/accounts")
