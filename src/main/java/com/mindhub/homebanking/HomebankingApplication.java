@@ -26,12 +26,12 @@ public class HomebankingApplication {
 	@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository) {
 		return (args) -> {
-
+/*
 			Client client1 = new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("melba"));
 			clientRepository.save(client1);
 
-			Account account1 = new Account("VIN0001", LocalDate.now(), 5000, client1);
-			Account account2 = new Account("VIN0002", LocalDate.now().plusDays(1), 7500, client1);
+			Account account1 = new Account("VIN00000001", LocalDate.now(), 5000, client1);
+			Account account2 = new Account("VIN00000002", LocalDate.now().plusDays(1), 7500, client1);
 
 			client1.addAccount(account1);
 			client1.addAccount(account2);
@@ -40,7 +40,7 @@ public class HomebankingApplication {
 			accountRepository.save(account2);
 
 			Client client2 = new Client("Diego", "Martinez", "martinez.diego90@gmail.com",passwordEncoder.encode("Password"));
-			Account account3 = new Account("VIN0003", LocalDate.now(), 9000, client2);
+			Account account3 = new Account("VIN00000003", LocalDate.now(), 9000, client2);
 			client2.addAccount(account3);
 			clientRepository.save(client2);
 			accountRepository.save(account3);
@@ -92,6 +92,8 @@ public class HomebankingApplication {
 			// 6
 			Client admin = new Client("admin","admin","admin@diebanking.com", passwordEncoder.encode("admin"));
 			clientRepository.save(admin);
+*/
+
 		};
 	}
 }
