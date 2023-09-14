@@ -43,10 +43,10 @@ public class TransactionController {
     @Transactional
     @PostMapping("/transactions")
     public ResponseEntity<Object> createTransaction (
-            @RequestParam Double amount, @RequestParam String description, @RequestParam String senderAccount, @RequestParam String receiverAccount, Authentication authentication
+            @RequestParam Double amount, @RequestParam String description, @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber, Authentication authentication
     ) {
-        Account originAccount = accountService.findByNumber(senderAccount);
-        Account destinyAccount = accountService.findByNumber(receiverAccount);
+        Account originAccount = accountService.findByNumber(fromAccountNumber);
+        Account destinyAccount = accountService.findByNumber(toAccountNumber);
 
         if (amount.isNaN()) {
             return new ResponseEntity<>("Please enter the amount", HttpStatus.FORBIDDEN);
@@ -54,22 +54,22 @@ public class TransactionController {
         if (description.isEmpty()) {
             return new ResponseEntity<>("Please enter the description", HttpStatus.FORBIDDEN);
         }
-        if (senderAccount.isEmpty()) {
+        if (fromAccountNumber.isEmpty()) {
             return new ResponseEntity<>("Please enter the origin account", HttpStatus.FORBIDDEN);
         }
-        if (receiverAccount.isEmpty()) {
+        if (toAccountNumber.isEmpty()) {
             return new ResponseEntity<>("Please enter the destiny account", HttpStatus.FORBIDDEN);
         }
-        if (senderAccount.equals(receiverAccount)) {
+        if (fromAccountNumber.equals(toAccountNumber)) {
             return new ResponseEntity<>("The accounts are the same", HttpStatus.FORBIDDEN);
         }
-        if (senderAccount == null) {
+        if (fromAccountNumber == null) {
             return new ResponseEntity<>("The origin account doesn't exist", HttpStatus.FORBIDDEN);
         }
-        if (receiverAccount == null) {
+        if (toAccountNumber == null) {
             return new ResponseEntity<>("The destination account doesn't exist", HttpStatus.FORBIDDEN);
         }
-        if (clientService.findByEmail(authentication.getName()).getAccounts().stream().noneMatch(account -> account.getNumber().equals(senderAccount))) {
+        if (clientService.findByEmail(authentication.getName()).getAccounts().stream().noneMatch(account -> account.getNumber().equals(fromAccountNumber))) {
             return new ResponseEntity<>("The origin account doesn't belong to you", HttpStatus.FORBIDDEN);
         }
         if (amount > originAccount.getBalance()) {
