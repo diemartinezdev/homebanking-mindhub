@@ -45,7 +45,7 @@ public class AccountController {
     ) {
         Client newClient = clientService.findByEmail(authentication.getName());
 
-        if (newClient.getAccounts().size() > 2) {
+        if (newClient.getAccounts().size() > 3) {
             return new ResponseEntity<>("Already have 3 accounts", HttpStatus.FORBIDDEN);
         }
 

@@ -74,6 +74,7 @@
                         </ul>
                     </div>
                 </div>
+
                 <div class="col">
                     <div class="row">
                         <div class="col">
@@ -119,6 +120,9 @@
                                     </div>
                                     <img class="plastic-card__back-logo plastic-card__logo" src="img/Mindhub-logo.png">
                                 </div>
+                                <div class="nav nav-pills flex-column mb-auto">
+                                    <button type="button" class="btn btn-danger" @click="deleteCard">Delete Card</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -158,6 +162,9 @@
                                         <span class="plastic-card__label">{{ card.type}} {{ card.color }}</span>
                                     </div>
                                     <img class="plastic-card__back-logo plastic-card__logo" src="img/Mindhub-logo.png">
+                                </div>
+                                <div class="nav nav-pills flex-column mb-auto">
+                                    <button type="button" class="btn btn-danger" @click="deleteCard">Delete Card</button>
                                 </div>
                             </div>
                         </div>

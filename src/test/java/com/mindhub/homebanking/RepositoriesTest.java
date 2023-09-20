@@ -102,7 +102,7 @@ public class RepositoriesTest {
     public void createCard(){
         Client client = new Client("Alex","Filippo","alex@gmail.com","pupi123");
         clientRepository.save(client);
-        Card card = new Card(client.getFirstName()+" "+client.getLastName(),CardType.CREDIT,CardColor.TITANIUM,"4567-4567-4567-4567",987,LocalDate.now(),LocalDate.now().plusYears(4));
+        Card card = new Card(client.getFirstName()+" "+client.getLastName(),CardType.CREDIT,CardColor.TITANIUM,"4567-4567-4567-4567",987,LocalDate.now(),LocalDate.now().plusYears(4),true);
         cardRepository.save(card);
 
         Card newCard = cardRepository.findById(card.getId()).orElse(null);
