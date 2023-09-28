@@ -36,7 +36,7 @@ public class CardServiceImplement implements CardService {
     }
 
     @Override
-    public Optional<Card> findById(Long id) {
-        return cardRepository.findById(id);
+    public Card findById(Long id) {
+        return cardRepository.findById(id).orElse(null);
     }
 }

@@ -22,11 +22,11 @@ public class Card {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
     private Client client;
-    private boolean active;
+    private Boolean active;
 
     public Card() { }
 
-    public Card(String cardHolder, CardType type, CardColor color, String number, Integer cvv, LocalDate fromDate, LocalDate thruDate, boolean active) {
+    public Card(String cardHolder, CardType type, CardColor color, String number, Integer cvv, LocalDate fromDate, LocalDate thruDate, Boolean active) {
         this.cardHolder = cardHolder;
         this.type = type;
         this.color = color;
@@ -109,11 +109,7 @@ public class Card {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public void switchActive() {
-        this.active = !this.active;
     }
 }

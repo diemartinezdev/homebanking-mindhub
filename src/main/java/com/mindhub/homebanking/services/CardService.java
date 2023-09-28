@@ -12,5 +12,5 @@ public interface CardService {
     List<CardDTO> getCards();
     void deleteCardById(Long id);
     void saveCard(Card card);
-    Optional<Card> findById(Long id);
+    Card findById(Long id);
 }

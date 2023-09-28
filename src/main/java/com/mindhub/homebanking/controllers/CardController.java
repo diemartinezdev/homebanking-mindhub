@@ -48,23 +48,25 @@ public class CardController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/cards/{id}")
-    public ResponseEntity<Long> deleteCardById(@PathVariable Long id) {
-        try {
-            Optional<Card> cardOptional = cardService.findById(id);
-            if (cardOptional.isPresent()) {
-                Card card = cardOptional.get();
+    @PatchMapping("/clients/current/cards/{id}")
+    public ResponseEntity<Object> removeCard(@PathVariable Long id, Authentication authentication) {
 
-                card.setActive(false); // Desactiva la tarjeta
-                cardService.saveCard(card);
-
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        if(id == null) {
+            return new ResponseEntity<>("Unknown card", HttpStatus.FORBIDDEN);
         }
+
+        Card card = cardService.findById(id);
+        if(card == null) {
+            return new ResponseEntity<>("This card doesn't exist in the database", HttpStatus.FORBIDDEN);
+        }
+        if(!card.isActive()){
+            return new ResponseEntity<>("This card is already removed", HttpStatus.FORBIDDEN);
+        }
+
+        card.setActive(false);
+        cardService.saveCard(card);
+
+        return new ResponseEntity<>("Card removed successfully", HttpStatus.OK);
     }
 
 }
